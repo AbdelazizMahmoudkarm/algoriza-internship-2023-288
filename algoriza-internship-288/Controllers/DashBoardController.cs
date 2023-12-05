@@ -16,28 +16,28 @@ namespace algoriza_internship_288.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost("NumOfDoctor")]
+        [HttpGet("NumOfDoctor")]
         public async Task<IActionResult> DoctorNum(DateTime date)
         {
             int numOfDoctors = await _unitOfWork.Doctor.CountAsync(UserType.Doctor.ToString(),date);
             return Ok(numOfDoctors);
         }
 
-        [HttpPost("NumOfPatient")]
+        [HttpGet("NumOfPatient")]
         public async Task<IActionResult> PatientNum(DateTime date)
         {
             int numberOfPatient = await _unitOfWork.Doctor.CountAsync(UserType.Patient.ToString(),date);
             return Ok(numberOfPatient);
         }
 
-        [HttpPost("NumberOfRequestes")]
+        [HttpGet("NumberOfRequestes")]
         public IActionResult RequestNumber(DateTime date)
         {
             List<dynamic> RequestsWithStatus = _unitOfWork.Booking.GetStatusWithRequestNumber(date).ToList();
             return Ok(RequestsWithStatus);
         }
 
-        [HttpPost("Top5Specialization")]
+        [HttpGet("Top5Specialization")]
         public IActionResult Top5Specialization(DateTime date)
         {
             List<GetBookingInfoDto> top5OfDocIdWIthNumOfRequests = _unitOfWork.Booking
@@ -52,7 +52,7 @@ namespace algoriza_internship_288.Controllers
 
             return Ok(SpeclizeWithRequestNumber);
         }
-        [HttpPost("Top10Doctors")]
+        [HttpGet("Top10Doctors")]
         public IActionResult Top10DoctorsWithSpecialization(DateTime date)
         {
             List<GetBookingInfoDto> Top5OfDocIdWIthNumOfRequests = _unitOfWork.Booking
