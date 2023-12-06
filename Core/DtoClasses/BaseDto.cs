@@ -1,4 +1,5 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -7,7 +8,7 @@ namespace Domain.DtoClasses
 {
     public  class BaseDto
     {
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
         [Required]
         public string FName { get; set; }
         [Required]

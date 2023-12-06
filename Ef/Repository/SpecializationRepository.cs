@@ -1,5 +1,5 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Ef.DAL;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Repository.DAL;
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,22 +14,22 @@ namespace Repository.Repository
         {
             _context = context;
         }
-        public int GetByName(string name)
-        {
-            int? specializeId = _context.Specializations
-                .FirstOrDefault(x => x.Name.Equals(name))?.Id;
-            if (specializeId.HasValue && specializeId.Value > 0)
-                return specializeId.Value;
-            else
-                return 0;
-        }
-        public Specialization AddByName(string name)
-        {
-            return new Specialization
-            {
-                Name = name,
-            };
-        }
+        //public int GetByName(string name)
+        //{
+        //    int? specializeId = _context.Specializations
+        //        .FirstOrDefault(x => x.Name.Equals(name))?.Id;
+        //    if (specializeId.HasValue && specializeId.Value > 0)
+        //        return specializeId.Value;
+        //    else
+        //        return 0;
+        //}
+        //public Specialization AddByName(string name)
+        //{
+        //    return new Specialization
+        //    {
+        //        Name = name,
+        //    };
+        //}
         public string GetSpecializeNameByDoctorId(int doctorId)
         {
             return _context.Doctors

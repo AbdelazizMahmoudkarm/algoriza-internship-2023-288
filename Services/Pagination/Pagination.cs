@@ -1,4 +1,4 @@
-﻿namespace EF.Pagination
+﻿namespace Service.Pagination
 {
     /// <summary>
     /// Pipe which use to supply computed number or raws to page 

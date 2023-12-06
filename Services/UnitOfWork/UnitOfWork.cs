@@ -1,5 +1,6 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Ef.DAL;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Repository.DAL;
+using Domain.FluentApiClasses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
 using Repository.IRepository;
@@ -12,50 +13,15 @@ namespace Service.UnitOfWork
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private IDbContextTransaction _transaction;
-        public ICouponRepository Coupon
-        {
-            // get => _coupon ??= new CouponRepository(_context, _userManager);
-            get; private set;
-        }
-        public IPatientRepository Patient
-        {
-            // get => _patient ??= new PatientRepository(_context, _userManager);
-            get; private set;
-        }
-        
-        public IAppointmentRepository Appointment
-        {
-            // get => _appointment ??= new AppointmentRepository(_context, _userManager, _signInManager, _time);
-            get; private set;
-        }
-        public ISpecializationRepository Specialization
-        {
-            // get => _specialization ??= new SpecializationRepository(_context, _userManager);
-            get; private set;
-        }
-        public ITimeRepository Time
-        {
-            // get => _time ??= new TimeRepository(_context, _userManager);
-            get; private set;
-        }
-        public IDoctorRepository Doctor
-        {
-            //  get => _doctor ??= new DoctorRepository(_userManager, _context, _appointment, _signInManager, _specialization);
-            get; private set;
-        }
+        public ICouponRepository Coupon { get; private set;}
+        public IPatientRepository Patient { get; private set;}
+        public IAppointmentRepository Appointment { get; private set;}
+        public ISpecializationRepository Specialization { get; private set; }
+        public ITimeRepository Time { get; private set; }
+        public IDoctorRepository Doctor { get; private set; }
 
-        public IBookingRepository Booking
-        {
-            // get => _booking ??= new BookingRepository(_context, _userManager, _coupon, _appointment, _time);
-            get; private set;
-        }
-        //public Task<int> CommitTransactionAsync()
-        //{
-        //   return  SaveAsync();
-        //}
-
-       // public void CreateTransaction()
-       //=> _transaction ??= _context.Database.BeginTransaction();
+        public IBookingRepository Booking { get; private set; }
+       
 
         public void Dispose()
         {
@@ -67,6 +33,7 @@ namespace Service.UnitOfWork
         public UnitOfWork(AppDbContext context, UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager)
         {
+            Task.Run(() => InsertAdmin.CreateAdminAsync(userManager)).Wait();
             _context = context;
             _userManager = userManager;
             

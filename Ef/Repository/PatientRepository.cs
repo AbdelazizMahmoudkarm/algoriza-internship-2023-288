@@ -1,6 +1,6 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Core.Models.Enums;
-using algoriza_internship_288.Ef.DAL;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Domain.Models.Enums;
+using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Patient;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +27,7 @@ namespace Repository.Repository
                 IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()
                 {
                     DateOfAdd= DateTime.Now,
-                    Image = model.Image,//ProcessImage(doctor.Image),
+                    Image = ProcessImage(model.Image),//ProcessImage(doctor.Image),
                     UserName = string.Concat(model.FName, model.LName),
                     Email = model.Email,
                     PhoneNumber = model.Phone,

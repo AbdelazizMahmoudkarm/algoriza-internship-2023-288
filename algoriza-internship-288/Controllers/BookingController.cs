@@ -1,7 +1,9 @@
-﻿using algoriza_internship_288.Core.Models;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Domain.Models.Enums;
 using Domain.DtoClasses.Booking;
 using Domain.DtoClasses.Patient;
-using EF.Pagination;
+using Service.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.UnitOfWork;
@@ -19,7 +21,10 @@ namespace algoriza_internship_288.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        
         [HttpGet("GetAllRequests")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
+
         public async Task<IActionResult> GetAllRequestsAsync(int page, int pageSize, DateTime date)
         {
             string user = User.Identity.Name;
@@ -29,6 +34,7 @@ namespace algoriza_internship_288.Controllers
 
         }
         [HttpPut("ConfirmBooking")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
         public async Task<IActionResult> ConfirmAsync(int bookingId)
         {
             string user = User.Identity.Name;
@@ -37,16 +43,13 @@ namespace algoriza_internship_288.Controllers
                 await _unitOfWork.SaveAsync();
             return Ok(reault);
         }
-
-
-
         [HttpPost("Booking")]
-        public async Task<IActionResult> BookingAsync(AddBookingDto bookingModel, string userName)
+        [Authorize(Roles = nameof(UserType.Patient))]
+        public async Task<IActionResult> BookingAsync(AddBookingDto bookingModel)
         {
-
             if (!ModelState.IsValid)
                 return BadRequest();
-            bool result = await _unitOfWork.Booking.AddAsync(bookingModel, userName);
+            bool result = await _unitOfWork.Booking.AddAsync(bookingModel, User.Identity.Name);
             if (result)
                 await _unitOfWork.SaveAsync();
 
@@ -54,12 +57,14 @@ namespace algoriza_internship_288.Controllers
         }
 
         [HttpGet("GetAllBooking")]
+        [Authorize(Roles = nameof(UserType.Patient))]
         public async Task<IActionResult> GetAllBookingForPatientAsync()
         {
             string userName = User.Identity.Name;
             return Ok(await _unitOfWork.Booking.GetAllForPatient(userName));
         }
         [HttpPut("CancelBooking")]
+        [Authorize(Roles = nameof(UserType.Patient))]
         public async Task<IActionResult> CancelBooking(int bookingId)
         {
             if (bookingId == 0)

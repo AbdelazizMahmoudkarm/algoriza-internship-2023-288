@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace algoriza_internship_288.Core.Models
+namespace algoriza_internship_288.Domain.Models
 {
     public class Specialization
     {

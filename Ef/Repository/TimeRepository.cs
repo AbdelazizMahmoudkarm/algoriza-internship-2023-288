@@ -1,5 +1,5 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Ef.DAL;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Appointment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,12 +32,19 @@ namespace Repository.Repository
         }
         public bool Update(EditAppointmentDto model)
         {
-            var time = _context.Hours.Find(model.hourId);
-            if (time != null)
+            if (model is not null)
             {
-                time.ExistHour = TimeSpan.FromHours(model.Hour);
-                _context.Update(time);
-                return true;   
+                bool ifUpdateTimeExists = _context.Hours.Any(x => x.ExistHour == TimeSpan.FromHours(model.Hour));
+                if (ifUpdateTimeExists)
+                {
+                    var time = _context.Hours.Find(model.hourId);
+                    if (time != null)
+                    {
+                        time.ExistHour = TimeSpan.FromHours(model.Hour);
+                        _context.Update(time);
+                        return true;
+                    }
+                }
             }
             return false;
         }

@@ -1,5 +1,5 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Domain.Models.Enums;
 using Domain.DtoClasses;
 using Domain.DtoClasses.Appointment;
 using Repository.Repository;

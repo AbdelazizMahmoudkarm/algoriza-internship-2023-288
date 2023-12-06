@@ -1,9 +1,10 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Ef.FluentApiClasses;
+﻿using algoriza_internship_288.Domain.Models;
+using Domain.FluentApiClasses;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace algoriza_internship_288.Ef.DAL
+namespace algoriza_internship_288.Repository.DAL
 {
     public class AppDbContext : IdentityDbContext
     {
@@ -18,7 +19,8 @@ namespace algoriza_internship_288.Ef.DAL
             builder.Entity<Coupon>().CreateCoupobRelation();
             builder.Entity<Time>().CreateAppointMentRelation();
             builder.Entity<Specialization>().CreateSpecialization();
-            builder.CreateAdminUserWithAllRoles();
+            builder.CreateAllRoles();
+            builder.CreateSpecialization();
             base.OnModelCreating(builder);
         }
         public DbSet<Doctor> Doctors { get; set; }

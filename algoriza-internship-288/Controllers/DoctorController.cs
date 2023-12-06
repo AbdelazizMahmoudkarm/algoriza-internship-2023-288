@@ -1,26 +1,27 @@
-﻿using Domain.DtoClasses.Appointment;
+﻿using algoriza_internship_288.Domain.Models.Enums;
+using Domain.DtoClasses.Appointment;
 using Domain.DtoClasses.Doctor;
-using EF.Pagination;
+using Service.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Service.UnitOfWork;
-using System;
 
 namespace algoriza_internship_288.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   [Authorize(Roles =nameof(UserType.Doctor) +","+ nameof(UserType.Admin))]
     public class DoctorController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        public DoctorController(IUnitOfWork unitOfWork, IWebHostEnvironment webHost)
+        public DoctorController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _hostEnvironment = webHost;
         }
-        [HttpGet("GetAll")]///for admin
-        public IActionResult GetAll(int pageIndex,int pageSize,string? search=null)
+        [HttpGet("GetAll")]
+        [Authorize(Roles = nameof(UserType.Admin)+","+nameof(UserType.Patient))]
+        public IActionResult GetAll(int pageIndex = 1,int pageSize=5,string search=null)
         {
             IQueryable<GetDoctorDto> doctors;
             if (!search.IsNullOrEmpty())
@@ -44,7 +45,7 @@ namespace algoriza_internship_288.Controllers
         {
             if (id == 0)
                 return BadRequest();
-           GetDoctorDto doctor= _unitOfWork.Doctor.GetByCondition(x => x.Id == id).FirstOrDefault();
+            GetDoctorDto doctor = _unitOfWork.Doctor.GetByCondition(x => x.Id == id).FirstOrDefault();
             if (doctor == null)
                 return Ok("No data");
             else
@@ -53,68 +54,56 @@ namespace algoriza_internship_288.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromForm]AddDoctorDto doctorDto)
         {
-            bool isOk = false;
-            if(ModelState.IsValid)
-                isOk = await _unitOfWork.Doctor.AddAsync(doctorDto);
-            return Ok(isOk);   
+            
+            if (!ModelState.IsValid)
+                return BadRequest();
+            bool result = await _unitOfWork.Doctor.AddAsync(doctorDto);
+            return Ok(result);   
         }
         [HttpPut("Edit")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
         public  async Task<IActionResult> Edit([FromForm]UpdateDoctorDto editDoctorDto)
         {
-            bool isOk = false;
-            if (ModelState.IsValid)
-            {
-                isOk = _unitOfWork.Doctor.UpdateDoctor(editDoctorDto);
-                if (isOk)
-                    try
-                    {
-                        await _unitOfWork.SaveAsync();
-                    }catch(Exception ex)
-                    {
-
-                    }
-            }
-            return Ok(isOk);
-        }
-
-        [HttpPost("AddDoctorAppointments")]
-        public async Task<IActionResult> AddAppointments([FromBody] AddDoctorAppointmentsDto appointmentModel)
-        {
+            
             if (!ModelState.IsValid)
                 return BadRequest();
-            string userName = User.Identity.Name;
-            if (!await _unitOfWork.Doctor.UpdateWithAppointmentAddAsync(appointmentModel, "AliMahmoud"))
-                return NotFound();
-            return Ok(true);
-        }
-        [HttpPut("UpdateTime")]
-        public async Task<IActionResult> UpdateAppointMentAsync(EditAppointmentDto model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-            var user = User.Identity.Name;
-            bool reault = await _unitOfWork.Doctor.UpdateAppointmentTimeAsync(model, user);
-            if (reault) await _unitOfWork.SaveAsync();
-            return Ok(reault);
-        }
-        [HttpDelete("DeleteTime")]
-        public async Task<IActionResult> DeleteTimeAsync(int timeId)
-        {
-            string userName = User.Identity.Name;
-            bool result = await _unitOfWork.Doctor.DeleteAppointmentAsync(timeId, userName);
+           bool result = _unitOfWork.Doctor.UpdateDoctor(editDoctorDto);
             if (result)
                 await _unitOfWork.SaveAsync();
             return Ok(result);
         }
 
-
-        //[HttpDelete("Delete")]
-        //public async Task<IActionResult> DeleteAsync(int id)
-        //{
-        //    bool isOk = await _unitOfWork.Doctor.Delete(id);
-        //    if (isOk)
-        //        await _unitOfWork.SaveAsync();
-        //    return Ok(isOk);
-        //}
+        [HttpPost("AddDoctorAppointments")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
+        public async Task<IActionResult> AddAppointments([FromBody] AddDoctorAppointmentsDto appointmentModel)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!await _unitOfWork.Doctor.UpdateWithAppointmentAddAsync(appointmentModel, User.Identity.Name))
+                return NotFound();
+            return Ok(true);
+        }
+        [HttpPut("UpdateTime")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
+        public async Task<IActionResult> UpdateAppointMentAsync(EditAppointmentDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            bool reault = await _unitOfWork.Doctor.UpdateAppointmentTimeAsync(model, User.Identity.Name);
+            if (reault)
+                await _unitOfWork.SaveAsync();
+            return Ok(reault);
+        }
+        [HttpDelete("DeleteTime")]
+        [Authorize(Roles = nameof(UserType.Doctor))]
+        public async Task<IActionResult> DeleteTimeAsync(int timeId)
+        {
+            if(timeId==0)
+                return BadRequest();
+            bool result = await _unitOfWork.Doctor.DeleteAppointmentAsync(timeId, User.Identity.Name);
+            if (result)
+                await _unitOfWork.SaveAsync();
+            return Ok(result);
+        }
     }
 }

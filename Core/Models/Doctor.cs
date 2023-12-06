@@ -1,4 +1,4 @@
-﻿namespace algoriza_internship_288.Core.Models
+﻿namespace algoriza_internship_288.Domain.Models
 {
     public class Doctor
     {

@@ -1,4 +1,4 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 
 namespace Domain.DtoClasses.Doctor
 {
@@ -11,7 +11,6 @@ namespace Domain.DtoClasses.Doctor
         public string Email { get; set; }
         public string Phone { get; set; }
         public int SpecializeId { get; set; }
-        public string SpecialzeName { get; set; }
         public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public double CheckPrice { get; set; }

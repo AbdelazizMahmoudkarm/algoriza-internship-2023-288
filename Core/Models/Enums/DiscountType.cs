@@ -1,4 +1,4 @@
-﻿namespace algoriza_internship_288.Core.Models.Enums
+﻿namespace algoriza_internship_288.Domain.Models.Enums
 {
     public enum DiscountType
     {

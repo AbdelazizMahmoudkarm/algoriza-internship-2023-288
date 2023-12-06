@@ -1,6 +1,6 @@
-﻿using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Core.Models.Enums;
-using algoriza_internship_288.Ef.DAL;
+﻿using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Domain.Models.Enums;
+using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Appointment;
 using Domain.DtoClasses.Doctor;
 using Microsoft.AspNetCore.Identity;
@@ -30,35 +30,35 @@ namespace Repository.Repository
 
         public async Task<bool> AddAsync(AddDoctorDto model)
         {
-            int specializeId = _specialize.GetByName(model.SpecializeName);
-            Doctor doctor = new();
-            if (specializeId != 0)
-                doctor.SpecializeId = specializeId;
-            else
-                doctor.Specialization = _specialize.AddByName(model.SpecializeName);
-
-            IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()
+            if (model is not null)
             {
-                DateOfAdd = DateTime.Now,
-                Image = model.Image,//ProcessImage(doctor.Image),
-                UserName = string.Concat(model.FName,model.LName),
-                Email = model.Email,
-                PhoneNumber = model.Phone,
-                Gender = model.Gender,
-                Doctor = doctor
-            }, model.Password);
-            if (result.Succeeded)
-            {
-                ApplicationUser user =  GetUserByEmail( model.Email);
-                if (user is not null)
+                Doctor doctor = new();
+                if (model.SpecializeId != 0)
+                    doctor.SpecializeId = model.SpecializeId;
+                IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()
                 {
-                    result = await _userManager.AddToRoleAsync(user, UserType.Doctor.ToString());
-                    return result.Succeeded;
+                    DateOfAdd = DateTime.Now,
+                    Image = ProcessImage(model.Image),
+                    UserName = string.Concat(model.FName, model.LName),
+                    Email = model.Email,
+                    PhoneNumber = model.Phone,
+                    Gender = model.Gender,
+                    Doctor = doctor
+                }, model.Password);
+                if (result.Succeeded)
+                {
+                    ApplicationUser user = GetUserByEmail(model.Email);
+                    if (user is not null)
+                    {
+                        result = await _userManager.AddToRoleAsync(user, UserType.Doctor.ToString());
+                        return result.Succeeded;
+                    }
                 }
+                return result.Succeeded;
             }
-            return result.Succeeded;
+            return false;
         }
-
+           
         public async Task<bool> UpdateWithAppointmentAddAsync(AddDoctorAppointmentsDto appointmentModel, string userName)
         {
             bool isOk = false;
@@ -102,7 +102,7 @@ namespace Repository.Repository
                 doctor.Id = doctorModel.Id;
                 doctor.CheckPrice = doctorModel.CheckPrice;
                 doctor.ReCheckPrice = doctorModel.ReCheckPrice;
-                doctor.Specialization.Name = doctorModel.SpecialzeName;
+                doctor.SpecializeId = doctorModel.SpecializeId;
                 doctor.User.UserName = string.Concat(doctorModel.FName, doctorModel.LName);
                 doctor.User.Gender = doctorModel.Gender;
                 doctor.User.Email = doctorModel.Email;

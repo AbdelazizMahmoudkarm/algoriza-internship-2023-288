@@ -1,6 +1,7 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 using Domain.DtoClasses.Booking;
 using Domain.DtoClasses.Doctor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.UnitOfWork;
 
@@ -8,6 +9,7 @@ namespace algoriza_internship_288.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = nameof(UserType.Admin))]
     public class DashBoardController : ControllerBase
     {
         public readonly IUnitOfWork _unitOfWork;
@@ -61,7 +63,8 @@ namespace algoriza_internship_288.Controllers
             List<DoctorFilterIntoDto> DoctorWithRequestNumber = new();
             foreach (GetBookingInfoDto request in Top5OfDocIdWIthNumOfRequests)
             {
-                DoctorFilterIntoDto doctorWithRequestNumber = _unitOfWork.Doctor.GetDoctorInfoWithSpecializeName(request.DoctorId);
+                DoctorFilterIntoDto doctorWithRequestNumber = _unitOfWork.Doctor
+                    .GetDoctorInfoWithSpecializeName(request.DoctorId);
                 doctorWithRequestNumber.RequestsNumber=request.NumberOfRequests;
                 DoctorWithRequestNumber.Add(doctorWithRequestNumber);
             }

@@ -1,4 +1,4 @@
-﻿using algoriza_internship_288.Core.Models;
+﻿using algoriza_internship_288.Domain.Models;
 using Domain.DtoClasses.Coupon;
 using Repository.Repository;
 

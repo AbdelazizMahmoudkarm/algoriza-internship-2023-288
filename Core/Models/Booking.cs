@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace algoriza_internship_288.Core.Models
+namespace algoriza_internship_288.Domain.Models
 {
     public class Booking
     {

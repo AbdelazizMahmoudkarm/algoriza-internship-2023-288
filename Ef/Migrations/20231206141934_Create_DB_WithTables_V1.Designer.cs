@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using algoriza_internship_288.Ef.DAL;
+using algoriza_internship_288.Repository.DAL;
 
 #nullable disable
 
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231205140524_Create_DB_WithTables_V1")]
+    [Migration("20231206141934_Create_DB_WithTables_V1")]
     partial class Create_DB_WithTables_V1
     {
         /// <inheritdoc />

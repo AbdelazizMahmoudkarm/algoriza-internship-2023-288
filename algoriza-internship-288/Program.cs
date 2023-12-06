@@ -1,8 +1,11 @@
-using algoriza_internship_288.Core.Models;
-using algoriza_internship_288.Ef.DAL;
+using algoriza_internship_288.Domain.Models;
+using algoriza_internship_288.Repository.DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Service.UnitOfWork;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace algoriza_internship_288
@@ -26,6 +29,23 @@ namespace algoriza_internship_288
             );
 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+                 option =>
+                 {
+                     option.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuer = true,
+                         ValidateLifetime = true,
+                         ValidateAudience = true,
+                         ValidateIssuerSigningKey = true,
+                         ValidIssuer = config["Jwt:Issuer"],
+                         ValidAudience = config["Jwt:Audience"],
+                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"])),
+                     };
+                 });
+
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

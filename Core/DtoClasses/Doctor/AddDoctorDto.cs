@@ -1,11 +1,11 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 using Domain.DtoClasses;
 
 namespace Domain.DtoClasses.Doctor
 {
     public class AddDoctorDto : BaseDto
     {
-        public string SpecializeName { get; set; }
+        public int  SpecializeId { get; set; }
 
         //public virtual int GenderId { get { return (int)Gender; } set { Gender = (Gender)value; } }
 

@@ -1,8 +1,8 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace algoriza_internship_288.Core.Models
+namespace algoriza_internship_288.Domain.Models
 {
     public class ApplicationUser : IdentityUser
     {

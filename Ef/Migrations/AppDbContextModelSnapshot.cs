@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using algoriza_internship_288.Ef.DAL;
+using algoriza_internship_288.Repository.DAL;
 
 #nullable disable
 
@@ -54,19 +54,19 @@ namespace Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "af4f99d9-a1f9-466b-99d7-af4cf3d913ba",
+                            Id = "7a9b126c-e62c-4483-9c48-46e938a0b148",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "58d3d040-63af-456a-bac4-a22c52ed7113",
+                            Id = "1743c055-aa90-4d6b-85d0-1a21085f56a6",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "4031e1bd-d06d-4b5b-887d-26ca7a1813a5",
+                            Id = "6d0f44f2-9fe5-4dc9-ade3-db0f99079d03",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -230,13 +230,6 @@ namespace Repository.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "bfbf7d4e-2d6f-4637-a025-5c91f72a3b9d",
-                            RoleId = "af4f99d9-a1f9-466b-99d7-af4cf3d913ba"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -411,6 +404,32 @@ namespace Repository.Migrations
                         .IsUnique();
 
                     b.ToTable("Specializations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArName = "عيون",
+                            Name = "Eyes"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArName = "جلدية",
+                            Name = "Skin"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ArName = "عظام",
+                            Name = "Bones"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ArName = "اسنان",
+                            Name = "Teeth"
+                        });
                 });
 
             modelBuilder.Entity("algoriza_internship_288.Core.Models.Time", b =>
@@ -459,25 +478,6 @@ namespace Repository.Migrations
                         .HasFilter("[UserName] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "bfbf7d4e-2d6f-4637-a025-5c91f72a3b9d",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "77116e74-bf42-42f7-8b20-2b51edb10499",
-                            Email = "Abdelaziz.2023@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PasswordHash = "13S0b/QBead9nWGDtE3BnhD4UKIsfpDkCeTPDx1HpV8=",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "1887525e-3d16-4cd8-a05d-483ae4c8c03d",
-                            TwoFactorEnabled = false,
-                            UserName = "Abdelaziz",
-                            DateOfAdd = new DateTime(2023, 12, 5, 16, 5, 45, 880, DateTimeKind.Local).AddTicks(4907),
-                            DateOfBirth = new DateTime(1988, 12, 5, 16, 5, 45, 880, DateTimeKind.Local).AddTicks(4841),
-                            Gender = 1
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

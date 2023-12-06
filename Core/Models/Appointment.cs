@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using algoriza_internship_288.Core.Models.Enums;
+using algoriza_internship_288.Domain.Models.Enums;
 
-namespace algoriza_internship_288.Core.Models
+namespace algoriza_internship_288.Domain.Models
 {
     public class Appointment
     {

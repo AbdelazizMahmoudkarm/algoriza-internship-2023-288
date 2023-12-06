@@ -1,4 +1,4 @@
-﻿using algoriza_internship_288.Core.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 
 namespace Domain.DtoClasses.Appointment
 {
