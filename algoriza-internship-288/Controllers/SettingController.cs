@@ -1,9 +1,6 @@
-﻿using algoriza_internship_288.Domain.Models;
-using algoriza_internship_288.Domain.Models.Enums;
+﻿using algoriza_internship_288.Domain.Models.Enums;
 using Domain.DtoClasses.Coupon;
-using Domain.DtoClasses.Doctor;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.UnitOfWork;
 
@@ -57,8 +54,10 @@ namespace algoriza_internship_288.Controllers
         {
             if(couponId == 0)
                 return BadRequest();
-            bool reault =await  _unitOfWork.Coupon.DeactiveAsync(couponId);
-            return Ok(reault);
+            bool result =await _unitOfWork.Coupon.DeactiveAsync(couponId);
+            if (result)
+                await _unitOfWork.SaveAsync();
+            return Ok(result);
         }
 
     }

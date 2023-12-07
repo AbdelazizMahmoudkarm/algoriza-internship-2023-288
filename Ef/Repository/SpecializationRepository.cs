@@ -1,8 +1,4 @@
-﻿using algoriza_internship_288.Domain.Models;
-using algoriza_internship_288.Repository.DAL;
-using Azure.Core;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using algoriza_internship_288.Repository.DAL;
 using Repository.IRepository;
 
 namespace Repository.Repository
@@ -10,9 +6,11 @@ namespace Repository.Repository
     public class SpecializationRepository : ISpecializationRepository
     {
         private readonly AppDbContext _context;
-        public SpecializationRepository(AppDbContext context)
+        private readonly bool _arabic;
+        public SpecializationRepository(AppDbContext context,bool arabic)
         {
             _context = context;
+            _arabic = arabic;
         }
         //public int GetByName(string name)
         //{
@@ -34,7 +32,7 @@ namespace Repository.Repository
         {
             return _context.Doctors
                             .Where(x => x.Id.Equals(doctorId))
-                            .Select(x => x.Specialization.Name)
+                            .Select(x =>_arabic? x.Specialization.ArName:x.Specialization.Name )
                             .FirstOrDefault();
         }
     }

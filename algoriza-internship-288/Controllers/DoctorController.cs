@@ -16,9 +16,8 @@ namespace algoriza_internship_288.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         public DoctorController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        =>  _unitOfWork = unitOfWork;
+        
         [HttpGet("GetAll")]
         [Authorize(Roles = nameof(UserType.Admin)+","+nameof(UserType.Patient))]
         public IActionResult GetAll(int pageIndex = 1,int pageSize=5,string search=null)
@@ -28,7 +27,6 @@ namespace algoriza_internship_288.Controllers
             {
                 int.TryParse(search, out int doctorId);
                 if (doctorId > 0)
-
                     doctors = _unitOfWork.Doctor.GetByCondition(x => x.Id == doctorId);
                 else
                     doctors = _unitOfWork.Doctor.GetByCondition(x =>
@@ -41,6 +39,7 @@ namespace algoriza_internship_288.Controllers
         
 
         [HttpGet("GetById/{id:int}")]
+        [Authorize(Roles = nameof(UserType.Admin))]
         public IActionResult GetById(int id)
         {
             if (id == 0)
@@ -52,6 +51,7 @@ namespace algoriza_internship_288.Controllers
                 return Ok(doctor);
         }
         [HttpPost("Add")]
+        [Authorize(Roles = nameof(UserType.Admin))]
         public async Task<IActionResult> Add([FromForm]AddDoctorDto doctorDto)
         {
             
@@ -64,7 +64,6 @@ namespace algoriza_internship_288.Controllers
         [Authorize(Roles = nameof(UserType.Doctor))]
         public  async Task<IActionResult> Edit([FromForm]UpdateDoctorDto editDoctorDto)
         {
-            
             if (!ModelState.IsValid)
                 return BadRequest();
            bool result = _unitOfWork.Doctor.UpdateDoctor(editDoctorDto);

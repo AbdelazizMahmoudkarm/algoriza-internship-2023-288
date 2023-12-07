@@ -21,14 +21,8 @@ namespace Service.UnitOfWork
         public IDoctorRepository Doctor { get; private set; }
 
         public IBookingRepository Booking { get; private set; }
-       
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private bool _disposed = false;
+       
 
         public UnitOfWork(AppDbContext context, UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager)
@@ -37,14 +31,23 @@ namespace Service.UnitOfWork
             _context = context;
             _userManager = userManager;
             
-            Specialization= new SpecializationRepository(context);
+
+            Specialization= new SpecializationRepository(context,Localization.Arabic);
             Patient= new PatientRepository(context, userManager, signInManager);
             Time= new TimeRepository(context);
-            Appointment=new AppointmentRepository(context,Time);
-            Booking =new BookingRepository(_context, _userManager, Coupon, Appointment, Time,signInManager);
-            Doctor = new DoctorRepository(userManager, context, Appointment, signInManager, Specialization, Booking);
+            Appointment=new AppointmentRepository(context,Time,Localization.Arabic);
+            
+            Booking =new BookingRepository(context, _userManager,Coupon??=new CouponRepository(context,Booking), Appointment, Time,signInManager,Localization.Arabic);
             Coupon = new CouponRepository(context, Booking);
+            Doctor = new DoctorRepository(userManager, context, Appointment, signInManager, Specialization, Booking,Localization.Arabic);
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        private bool _disposed = false;
 
         public virtual void Dispose(bool dispose)
         {
@@ -59,15 +62,15 @@ namespace Service.UnitOfWork
             => _transaction?.Rollback();
 
 
-        public Task<int> SaveAsync()
+        public async Task<int> SaveAsync()
         {
             try
             {
-                return _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync();
             }
             catch (Exception dbEx)
             {
-                return Task.Run(() => 0);
+                return 0;
             }
         }
     }

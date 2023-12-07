@@ -1,12 +1,11 @@
 ﻿using algoriza_internship_288.Domain.Models;
 using Domain.DtoClasses.Coupon;
-using Repository.Repository;
 
 namespace Repository.IRepository
 {
     public  interface ICouponRepository
     {
-        public double GetDiscountAsync(int? couponId, double price);
+        public double GetDiscount(int? couponId, double price);
         public int GetIdOrDefault();
         public Task<bool> UpdateAsync(EditCouponDto couponModel);
         public  Task<bool> DeleteAsync(int id);

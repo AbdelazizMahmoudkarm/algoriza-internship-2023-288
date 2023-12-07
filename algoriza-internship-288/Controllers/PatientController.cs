@@ -26,13 +26,7 @@ namespace algoriza_internship_288.Controllers
             return Ok(result);
         }
 
-        //private int GetAge(DateTime dob)
-        //{
-        //    int age = DateTime.Now.Year - dob.Year;
-        //    if (DateTime.Now.DayOfYear < dob.DayOfYear)
-        //        age -= 1;
-        //    return age;
-        //}
+       
     }
 }
 

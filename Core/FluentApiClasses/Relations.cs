@@ -1,10 +1,6 @@
 ﻿using algoriza_internship_288.Domain.Models;
-using algoriza_internship_288.Domain.Models.Enums;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Security.Cryptography;
 
 namespace Domain.FluentApiClasses
 {
@@ -45,14 +41,14 @@ namespace Domain.FluentApiClasses
                     .HasForeignKey(x => x.DoctorId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Booking>()
-                    .WithOne(x => x.Appointment)
-                    .HasForeignKey<Booking>(x => x.AppointmentId).OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne<Booking>()
+            //        .WithOne(x => x.Appointment)
+            //        .HasForeignKey<Booking>(x => x.AppointmentId).OnDelete(DeleteBehavior.Restrict);
 
         }
         public static void CreateAppointMentRelation(this EntityTypeBuilder<Time> builder)
         {
-            builder.HasOne<Appointment>()
+            builder.HasOne(x => x.Appointment)
                  .WithMany(x => x.Times)
                  .HasForeignKey(x => x.AppointId)
                  .OnDelete(DeleteBehavior.Restrict);

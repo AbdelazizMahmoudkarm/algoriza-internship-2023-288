@@ -1,11 +1,12 @@
 ﻿using algoriza_internship_288.Domain.Models.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Domain.DtoClasses.Doctor
 {
     public  class UpdateDoctorDto 
     {
         public int Id { get; set; }
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }

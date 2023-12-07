@@ -11,11 +11,13 @@ namespace Repository.Repository
     {
         private readonly AppDbContext _context;
         private readonly ITimeRepository _time;
-        public AppointmentRepository(AppDbContext context, ITimeRepository time) 
+        public static  bool _arabic;
+        public AppointmentRepository(AppDbContext context, ITimeRepository time,bool arabic) 
             
         {
             _context = context;
             _time=time;
+            _arabic=arabic;
         }
         //public int? GetBy(Days day,int doctorId)
         //{
@@ -25,6 +27,9 @@ namespace Repository.Repository
         //        .Equals(day))
         //        .FirstOrDefault()?.Id;
         //}
+
+        //public bool CheckIfAppointmentIsExsist(int appointmentId,int timeId)
+        //=> _context.Appointments.Any(x => x.Id == appointmentId && x.Times.Any(x => x.Id == timeId));
 
         public bool UpdateAppointment(EditAppointmentDto appointment)
         {
@@ -96,9 +101,10 @@ namespace Repository.Repository
                 .Where(x => x.DoctorId.Equals(doctorid))
                 .Select(appointmrnt => new GetAppointmentDto()
                 {
-                    Days = appointmrnt.ExistingDay.ToString(),
+                    Days = appointmrnt.ExistingDay.GetDay(_arabic),
                     Times = appointmrnt.Times.Select(x => x.ExistHour).ToList(),
                 });
         }
+     
     }
 }

@@ -10,9 +10,11 @@ namespace Repository.IRepository
     {
         // public int? GetBy(Days day,int doctorId);
         public List<Appointment> AddAppointments(List<AddAppointmentDto> model, int doctorId);
+        //public bool CheckIfAppointmentIsExsist(int appointmentId, int timeId);
         public IQueryable<GetAppointmentDto> GetDaysAndTimes(int doctorid);
         public dynamic GetAppointmentIdWithTimeIdOrDefault(int doctorId, Days day, double time);
         public bool UpdateAppointment(EditAppointmentDto appointment);
         public bool DeleteAppointment(int hourId);
+
     }
 }

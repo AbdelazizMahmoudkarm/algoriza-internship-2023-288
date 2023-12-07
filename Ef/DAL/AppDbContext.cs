@@ -1,6 +1,5 @@
 ﻿using algoriza_internship_288.Domain.Models;
 using Domain.FluentApiClasses;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -16,16 +16,18 @@ namespace Repository.Repository
         private readonly IAppointmentRepository _appointment;
         private readonly ISpecializationRepository _specialize;
         private readonly IBookingRepository _booking;
+        public static bool _arabic;
 
         public DoctorRepository(UserManager<ApplicationUser> userManager, AppDbContext context,
             IAppointmentRepository appointment, SignInManager<ApplicationUser> signInManager,
-            ISpecializationRepository specialize,IBookingRepository booking) : base(userManager, signInManager)
+            ISpecializationRepository specialize,IBookingRepository booking, bool arabic) : base(userManager, signInManager)
         {
             _userManager = userManager;
             _context = context;
             _appointment = appointment;
             _specialize = specialize;
             _booking = booking;
+            _arabic = arabic;
         }
 
         public async Task<bool> AddAsync(AddDoctorDto model)
@@ -76,20 +78,20 @@ namespace Repository.Repository
         }
         public async Task<bool> UpdateAppointmentTimeAsync(EditAppointmentDto model,string userName)
         {
-            int doctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName)).Doctor.Id;
-            if(doctorId !=0)
+            int? doctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName))?.Doctor.Id;
+            if(doctorId.HasValue)
             {
-                if(!_booking.CheckIfDayAndTimeExists(doctorId, model.hourId))
+                if(!_booking.CheckIfDayAndTimeExists(doctorId.Value, model.hourId))
                     return _appointment.UpdateAppointment(model);
             }
             return false;
         }
         public async Task<bool> DeleteAppointmentAsync(int hourId, string userName)
         {
-            int doctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName)).Doctor.Id;
-            if (doctorId != 0)
+            int? doctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName))?.Doctor.Id;
+            if (doctorId.HasValue)
             {
-                if (!_booking.CheckIfDayAndTimeExists(doctorId, hourId))
+                if (!_booking.CheckIfDayAndTimeExists(doctorId.Value, hourId))
                     return _appointment.DeleteAppointment(hourId);
             }
             return false;
@@ -106,7 +108,7 @@ namespace Repository.Repository
                 doctor.User.UserName = string.Concat(doctorModel.FName, doctorModel.LName);
                 doctor.User.Gender = doctorModel.Gender;
                 doctor.User.Email = doctorModel.Email;
-                doctor.User.Image = doctorModel.Image;
+                doctor.User.Image = ProcessImage(doctorModel.Image);
                 doctor.User.DateOfBirth = doctorModel.DateOfBirth;
                 doctor.User.PhoneNumber = doctorModel.Phone;
             }
@@ -150,15 +152,15 @@ namespace Repository.Repository
             {
                 Id = x.Id,
                 UserName = x.User.UserName,
-                SpecializeNmae = x.Specialization.Name,
+                SpecializeNmae =_arabic ? x.Specialization.ArName : x.Specialization.Name,
                 Email = x.User.Email,
-                Gender = x.User.Gender.ToString(),
+                Gender = x.User.Gender.GetGender(_arabic),
                 CheckPrice = x.CheckPrice,
                 ReCheckPrice = x.ReCheckPrice,
                 Appointments = _appointment.GetDaysAndTimes(x.Id).ToList()
             });
         }
-       
+     
 
         public DoctorFilterIntoDto GetDoctorInfoWithSpecializeName(int doctorId)
         {
@@ -169,7 +171,7 @@ namespace Repository.Repository
                           {
                               Image = x.User.Image,
                               FullName = x.User.UserName,
-                              SpecializeName = x.Specialization.Name
+                              SpecializeName = _arabic ?x.Specialization.ArName : x.Specialization.Name,
                           }).FirstOrDefault();
         }        
     }

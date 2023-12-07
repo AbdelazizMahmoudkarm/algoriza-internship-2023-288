@@ -12,8 +12,8 @@ using algoriza_internship_288.Repository.DAL;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231206141934_Create_DB_WithTables_V1")]
-    partial class Create_DB_WithTables_V1
+    [Migration("20231207183432_Create_DB_AllTables_V1")]
+    partial class Create_DB_AllTables_V1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,7 +234,7 @@ namespace Repository.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Appointment", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,16 +255,13 @@ namespace Repository.Migrations
                     b.ToTable("Appointments");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Booking", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("CouponId")
                         .HasColumnType("int");
@@ -291,9 +288,6 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
-
                     b.HasIndex("CouponId");
 
                     b.HasIndex("DoctorId");
@@ -306,7 +300,7 @@ namespace Repository.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Coupon", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Coupon", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -335,7 +329,7 @@ namespace Repository.Migrations
                     b.ToTable("Coupons");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Doctor", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Doctor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -366,7 +360,7 @@ namespace Repository.Migrations
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Specialization", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Specialization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +383,7 @@ namespace Repository.Migrations
                     b.ToTable("Specializations");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Time", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Time", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -410,7 +404,7 @@ namespace Repository.Migrations
                     b.ToTable("Hours");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.ApplicationUser", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -488,47 +482,39 @@ namespace Repository.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Appointment", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Appointment", b =>
                 {
-                    b.HasOne("algoriza_internship_288.Core.Models.Doctor", null)
+                    b.HasOne("algoriza_internship_288.Domain.Models.Doctor", null)
                         .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Booking", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Booking", b =>
                 {
-                    b.HasOne("algoriza_internship_288.Core.Models.Appointment", "Appointment")
-                        .WithOne()
-                        .HasForeignKey("algoriza_internship_288.Core.Models.Booking", "AppointmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("algoriza_internship_288.Core.Models.Coupon", "Coupon")
+                    b.HasOne("algoriza_internship_288.Domain.Models.Coupon", "Coupon")
                         .WithMany("Bookings")
                         .HasForeignKey("CouponId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("algoriza_internship_288.Core.Models.Doctor", "Doctor")
+                    b.HasOne("algoriza_internship_288.Domain.Models.Doctor", "Doctor")
                         .WithMany("Requests")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("algoriza_internship_288.Core.Models.Time", "Hour")
+                    b.HasOne("algoriza_internship_288.Domain.Models.Time", "Hour")
                         .WithOne()
-                        .HasForeignKey("algoriza_internship_288.Core.Models.Booking", "HourId")
+                        .HasForeignKey("algoriza_internship_288.Domain.Models.Booking", "HourId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("algoriza_internship_288.Core.Models.ApplicationUser", "Patient")
+                    b.HasOne("algoriza_internship_288.Domain.Models.ApplicationUser", "Patient")
                         .WithMany("Bookings")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Appointment");
 
                     b.Navigation("Coupon");
 
@@ -539,17 +525,17 @@ namespace Repository.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Doctor", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Doctor", b =>
                 {
-                    b.HasOne("algoriza_internship_288.Core.Models.Specialization", "Specialization")
+                    b.HasOne("algoriza_internship_288.Domain.Models.Specialization", "Specialization")
                         .WithMany("Doctors")
                         .HasForeignKey("SpecializeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("algoriza_internship_288.Core.Models.ApplicationUser", "User")
+                    b.HasOne("algoriza_internship_288.Domain.Models.ApplicationUser", "User")
                         .WithOne("Doctor")
-                        .HasForeignKey("algoriza_internship_288.Core.Models.Doctor", "UserId")
+                        .HasForeignKey("algoriza_internship_288.Domain.Models.Doctor", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Specialization");
@@ -557,38 +543,40 @@ namespace Repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Time", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Time", b =>
                 {
-                    b.HasOne("algoriza_internship_288.Core.Models.Appointment", null)
+                    b.HasOne("algoriza_internship_288.Domain.Models.Appointment", "Appointment")
                         .WithMany("Times")
                         .HasForeignKey("AppointId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Appointment");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Appointment", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Appointment", b =>
                 {
                     b.Navigation("Times");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Coupon", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Coupon", b =>
                 {
                     b.Navigation("Bookings");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Doctor", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Doctor", b =>
                 {
                     b.Navigation("Appointments");
 
                     b.Navigation("Requests");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.Specialization", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.Specialization", b =>
                 {
                     b.Navigation("Doctors");
                 });
 
-            modelBuilder.Entity("algoriza_internship_288.Core.Models.ApplicationUser", b =>
+            modelBuilder.Entity("algoriza_internship_288.Domain.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Bookings");
 

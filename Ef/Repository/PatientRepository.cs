@@ -10,18 +10,12 @@ namespace Repository.Repository
 {
     public class PatientRepository : BaseRepository<ApplicationUser>, IPatientRepository
     {
-        //private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        
-        //private readonly IBookingRepository _booking;
 
         public PatientRepository(AppDbContext context, UserManager<ApplicationUser> usermanager, 
             SignInManager<ApplicationUser> signInManager) : base(usermanager, signInManager)
-        {
-            //_context = context;
+        =>
             _userManager = usermanager;
-            
-        }
         public async Task<bool> AddAsync(AddPatientDto model)
         {
                 IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()

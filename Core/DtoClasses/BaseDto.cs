@@ -21,6 +21,7 @@ namespace Domain.DtoClasses
         public string Phone { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Gender Gender { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
         [Compare("ConfirmPassword"),PasswordPropertyText(true)]
         //[RegularExpression("[A-Z]+[A-za-z]{6,}[-_$@]{1}[a-z09]+")]

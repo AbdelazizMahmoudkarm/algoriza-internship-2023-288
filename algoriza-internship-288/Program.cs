@@ -13,7 +13,7 @@ namespace algoriza_internship_288
     public class Program
     {
         public static void Main(string[] args)
-        {
+            {
             var builder = WebApplication.CreateBuilder(args);
 
             IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

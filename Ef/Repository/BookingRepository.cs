@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Repository.IRepository;
 
+
 namespace Repository.Repository
 {
     public class BookingRepository : BaseRepository<Booking>, IBookingRepository
@@ -17,9 +18,10 @@ namespace Repository.Repository
         private readonly IAppointmentRepository _appointment;
         private readonly ITimeRepository _time;
         private readonly UserManager<ApplicationUser> _userManager;
+        public static bool _arabic;
         public BookingRepository(AppDbContext context, UserManager<ApplicationUser> userManager,
-            ICouponRepository coupon,
-            IAppointmentRepository appointment, ITimeRepository time,SignInManager<ApplicationUser> signInManager) 
+            ICouponRepository coupon,IAppointmentRepository appointment,
+            ITimeRepository time,SignInManager<ApplicationUser> signInManager,bool arabic) 
             : base(userManager, signInManager)
         {
             _context = context;
@@ -27,6 +29,7 @@ namespace Repository.Repository
             _appointment = appointment;
             _time = time;
             _userManager= userManager;
+            _arabic= arabic;
         }
         public async Task<bool> CancelAsync(int bookingId, string userName)
         {
@@ -76,15 +79,20 @@ namespace Repository.Repository
                 {
                     int doctorId = doctor.Id;
                     //  dynamic appointment = _appointment.GetAppointmentIdWithTimeIdOrDefault(doctorId, book.Day, book.Time);
-                    if (book.AppointmentId != 0 && book.TimeId != 0)
+                    if (/*book.AppointmentId != 0 &&*/ book.TimeId != 0)
                     {
                         //int appointmentId = appointment.AppointmentId;
                         //int hourId = appointment.TimeId;
 
-                        bool checkIfDayAndTimeNotAvalible = _context.Bookings
-                            .Any(x => x.DoctorId == doctorId
-                            && x.AppointmentId == book.AppointmentId && x.HourId == book.TimeId);
-                        if (checkIfDayAndTimeNotAvalible)
+                        bool checkIfTimeExistBefore = _context.Bookings
+                            .Any(x => x.DoctorId == doctorId&&  x.HourId == book.TimeId);
+                        if (checkIfTimeExistBefore)
+                            return false;
+                        bool bookingSameDoctorWithSameDay = _context.Bookings
+                            .Any(x => x.DoctorId == doctorId &&x.PatientId==patientId &&x.Date.Value.DayOfYear == DateTime.Now.DayOfYear);
+                        if (bookingSameDoctorWithSameDay)
+                            return false;
+                        if(!_time.CheckIfTimeExistForDoctor(book.TimeId , doctorId))
                             return false;
                         double pricecheckOrRecheck = 0d;
                         if (!book.IsCheck)//Determine if check or recheck if the input is recheck
@@ -101,18 +109,22 @@ namespace Repository.Repository
                         if (!book.CouponCode.IsNullOrEmpty())// if there is a coupon in input check how many booking for this patient
                         {
                             Coupon coupon = await _coupon.GetCouponByCode(book.CouponCode);
-                            if (_context.Bookings
-                                    .Count(booking => booking.PatientId == patientId
-                                        && booking.CouponId.Equals(null)
-                                        && booking.Status == RequestType.Completed)
-                                                 >= coupon.NumberOfRequestCompleted)
-                                couponId = coupon.Id;
+
+                            if (coupon != null)
+                            {
+                                if (_context.Bookings
+                                        .Count(booking => booking.PatientId == patientId
+                                            && booking.CouponId.Equals(null)
+                                            && booking.Status == RequestType.Completed)
+                                                     >= coupon.NumberOfRequestCompleted)
+                                    couponId = coupon.Id;
+                            }
                         }
                         _context.Bookings.Add(new Booking()
                         {
                             PatientId = patientId,
                             Date = DateTime.Now,
-                            AppointmentId = book.AppointmentId,
+                           // AppointmentId = book.AppointmentId,
                             DoctorId = doctorId,
                             Price = pricecheckOrRecheck,
                             Status = RequestType.Pending,
@@ -127,42 +139,59 @@ namespace Repository.Repository
         }
         public async Task<IQueryable<GetBookingForDoctorDto>> GetAllForDoctor(string userName, DateTime date)
         {
-            string DoctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName))?.Id;
-            IQueryable<Booking> bookingDoctor = null;
+            int? DoctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName)).Doctor?.Id;
+            if(!DoctorId.HasValue)
+                return null;
+            IQueryable<Booking> bookingDoctor;
             if (!date.Equals(DateTime.MinValue))
-                bookingDoctor = _context.Bookings.Where(b => b.PatientId.Equals(DoctorId) && b.Date == date);
+                bookingDoctor = _context.Bookings.Where(b => b.DoctorId.Equals(DoctorId) && b.Date >= date);
             else
-                bookingDoctor = _context.Bookings.Where(b => b.PatientId.Equals(DoctorId));
+                bookingDoctor = _context.Bookings.Where(b => b.DoctorId.Equals(DoctorId));
 
-            return bookingDoctor?.Select(b =>
+            return bookingDoctor.Select(b =>
             new GetBookingForDoctorDto()
             {
-                Patientname = b.Doctor.User.UserName,
-                Image = b.Doctor.User.Image,
-                Day = b.Appointment.ExistingDay.ToString(),
+                Patientname = b.Patient.UserName,
+                Gender=b.Patient.Gender.GetGender(_arabic),
+                Image = b.Patient.Image,
+                Email= b.Patient.Email,
+                age=GetAge(b.Patient.DateOfBirth),
+                Phone=b.Patient.PhoneNumber,
+                Day = b.Hour.Appointment.ExistingDay.GetDay(_arabic),
                 Hour = b.Hour.ExistHour,
-                Status = b.Status.ToString(),
+                Status = b.Status.GetStatus(_arabic),
                 BookingDate = b.Date.Value
             }).AsNoTracking();
         }
-        public async Task<IQueryable<GetBookingForPatientDto>> GetAllForPatient(string userName)
+        private static int GetAge(DateTime dob)
+        {
+            int age = DateTime.Now.Year - dob.Year;
+            if (DateTime.Now.DayOfYear < dob.DayOfYear)
+                age -= 1;
+            return age;
+        }
+        public async Task<IEnumerable<GetBookingForPatientDto>> GetAllForPatient(string userName)
         {
             string patientId = (await GetUserAsync(UserType.Patient.ToString(), userName))?.Id;
-            return _context.Bookings.Where(b => b.PatientId.Equals(patientId)).Select(b =>
+           
+
+           var patientbooking= _context.Bookings.Where(b => b.PatientId.Equals(patientId)).AsEnumerable().Select( b =>
             new GetBookingForPatientDto()
             {
                 DoctorName = b.Doctor.User.UserName,
-                Image = b.Doctor.User.Image,
-                Day = b.Appointment.ExistingDay.ToString(),
+                SpecializeName = _arabic ? b.Doctor.Specialization.ArName : b.Doctor.Specialization.Name,
+                DoctorImage = b.Doctor.User.Image,
+                Day = b.Hour.Appointment.ExistingDay.GetDay(_arabic),
                 Time = b.Hour.ExistHour.TotalHours,
-                SpecializeName = b.Doctor.Specialization.Name,
-                Status = b.Status.ToString(),
+                Status = b.Status.GetStatus(_arabic),
                 BookingDate = b.Date,
                 Price = b.Price,
-                CouponId = b.CouponId.HasValue?b.CouponId.Value:0,/////////////////////////
-                FinalPrice = _coupon.GetDiscountAsync(b.CouponId.Value, b.Price),
-            }).AsNoTracking();
+                DiscountCode = b.CouponId.HasValue ? b.Coupon.Code:_arabic? "لا يوجد":" No Thing" ,/////////////////////////
+               FinalPrice = b.CouponId.HasValue? _coupon.GetDiscount(b.CouponId.Value, b.Price):b.Price,
+            });
+            return patientbooking;
         }
+        
         public IQueryable<GetBookingInfoDto> GetDoctorIdWithNumberOfRequests(int number,DateTime date)
         {
             IQueryable<Booking> booking = null;

@@ -22,14 +22,13 @@ namespace algoriza_internship_288.Controllers
         }
 
         
-        [HttpGet("GetAllRequests")]
+        [HttpGet("GetAllRequestsForDoctor")]
         [Authorize(Roles = nameof(UserType.Doctor))]
-
-        public async Task<IActionResult> GetAllRequestsAsync(int page, int pageSize, DateTime date)
+        public async Task<IActionResult> GetAllRequestsAsync(DateTime date,int page = 1 , int pageSize=5)
         {
             string user = User.Identity.Name;
             IEnumerable<GetBookingForDoctorDto> DoctorBooking =
-                   (await _unitOfWork.Booking.GetAllForDoctor(user, date)).Paginate(page, pageSize);
+                   (await _unitOfWork.Booking.GetAllForDoctor(user, date))?.Paginate(page, pageSize);
             return Ok(DoctorBooking);
 
         }
@@ -56,7 +55,7 @@ namespace algoriza_internship_288.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAllBooking")]
+        [HttpGet("GetAllBookingForPatient")]
         [Authorize(Roles = nameof(UserType.Patient))]
         public async Task<IActionResult> GetAllBookingForPatientAsync()
         {

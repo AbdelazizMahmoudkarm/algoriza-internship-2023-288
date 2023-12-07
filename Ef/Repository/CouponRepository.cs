@@ -47,7 +47,6 @@ namespace Repository.Repository
             }
             return false;
         }
-
         public async Task<bool> UpdateAsync(EditCouponDto couponModel)
         {
             if (couponModel is not null)
@@ -69,21 +68,19 @@ namespace Repository.Repository
             }
             return false;
         }
-        public double GetDiscountAsync(int? couponId, double price)
+        public double GetDiscount(int? couponId, double price)
         {
             if (couponId.HasValue && couponId.Value > 0)
             {
-                var coupon = _context.Coupons.Find(couponId);
-                if (coupon is not null)
-                {
-                    if (coupon.DiscountType.Equals(DiscountType.Value))
-                        return price - coupon.Value;
-
-                    else
-                        return price - ((coupon.Value / 100) * price);
-                }
+                Coupon coupon =  _context.Coupons.Find(couponId);
+                if (coupon is null)
+                    return price;
+                if (coupon.DiscountType.Equals(DiscountType.Value))
+                    return price - coupon.Value;
+                else
+                    return price - ((coupon.Value / 100) * price);
             }
-            return default;
+            return price;
         }
         public async Task<bool> DeleteAsync(int id)
         {
@@ -104,6 +101,7 @@ namespace Repository.Repository
             if(coupon is not null)
             {
                 coupon.Avaliable = false;
+                return true;
             }
             return false;
         }

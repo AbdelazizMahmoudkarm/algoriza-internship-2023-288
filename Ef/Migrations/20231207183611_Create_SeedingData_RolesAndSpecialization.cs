@@ -7,7 +7,7 @@
 namespace Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRolesWithSpecialization_V2 : Migration
+    public partial class Create_SeedingData_RolesAndSpecialization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,9 @@ namespace Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1743c055-aa90-4d6b-85d0-1a21085f56a6", null, "Doctor", "DOCTOR" },
-                    { "6d0f44f2-9fe5-4dc9-ade3-db0f99079d03", null, "Patient", "PATIENT" },
-                    { "7a9b126c-e62c-4483-9c48-46e938a0b148", null, "Admin", "ADMIN" }
+                    { "65245382-8301-4da2-a5ac-6d66d34c9bbd", null, "Patient", "PATIENT" },
+                    { "e6e6ce57-68c3-4c15-9c78-89a149407fc9", null, "Doctor", "DOCTOR" },
+                    { "ee78c7c3-c557-42b6-b85d-fe90bd19a626", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -40,17 +40,17 @@ namespace Repository.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "1743c055-aa90-4d6b-85d0-1a21085f56a6");
+                keyValue: "65245382-8301-4da2-a5ac-6d66d34c9bbd");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "6d0f44f2-9fe5-4dc9-ade3-db0f99079d03");
+                keyValue: "e6e6ce57-68c3-4c15-9c78-89a149407fc9");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "7a9b126c-e62c-4483-9c48-46e938a0b148");
+                keyValue: "ee78c7c3-c557-42b6-b85d-fe90bd19a626");
 
             migrationBuilder.DeleteData(
                 table: "Specializations",

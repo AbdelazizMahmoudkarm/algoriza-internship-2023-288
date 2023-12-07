@@ -14,11 +14,11 @@ namespace Repository.Repository
         {
             _context = context;
         }
-        public int? GetBy(double time,int appointmentId)
-        {
-            return _context.Hours
-                .FirstOrDefault(x=>x.ExistHour.TotalHours.Equals(time)&&x.AppointId.Equals(appointmentId))?.Id;
-        }
+        //public int? GetBy(double time,int appointmentId)
+        //{
+        //    return _context.Hours
+        //        .FirstOrDefault(x=>x.ExistHour.TotalHours.Equals(time)&&x.AppointId.Equals(appointmentId))?.Id;
+        //}
         public bool Delete(int hourId)
         {
             _context.Hours.Where(x => x.Id == hourId).ExecuteDelete();
@@ -35,7 +35,7 @@ namespace Repository.Repository
             if (model is not null)
             {
                 bool ifUpdateTimeExists = _context.Hours.Any(x => x.ExistHour == TimeSpan.FromHours(model.Hour));
-                if (ifUpdateTimeExists)
+                if (!ifUpdateTimeExists)
                 {
                     var time = _context.Hours.Find(model.hourId);
                     if (time != null)
@@ -48,7 +48,9 @@ namespace Repository.Repository
             }
             return false;
         }
-
+        public  bool CheckIfTimeExistForDoctor(int timeId , int doctorId)
+        => _context.Hours.Any(x => x.Id==timeId && x.Appointment.DoctorId==doctorId);
+        
         
         public List<Time> Add(List<double> timesModel, int appointmentId)
         {

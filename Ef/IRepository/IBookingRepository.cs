@@ -8,7 +8,7 @@ namespace Repository.IRepository
     {
         public Task<bool> AddAsync(AddBookingDto book, string userName);
         public IQueryable<dynamic> GetStatusWithRequestNumber(DateTime date);
-        public  Task<IQueryable<GetBookingForPatientDto>> GetAllForPatient(string userName);
+        public  Task<IEnumerable<GetBookingForPatientDto>> GetAllForPatient(string userName);
         public Task<bool> CancelAsync(int bookingId,string userName);
         public IQueryable<GetBookingInfoDto> GetDoctorIdWithNumberOfRequests(int number,DateTime date);
         public  Task<bool> ConfirmAsync(int bookingId, string userName);
