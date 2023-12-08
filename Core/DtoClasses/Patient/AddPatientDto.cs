@@ -1,8 +1,9 @@
-﻿using algoriza_internship_288.Domain.Models.Enums;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Domain.DtoClasses.Patient
 {
     public class AddPatientDto : BaseDto
     {
+        public IFormFile Image { get; set; }
     }
 }

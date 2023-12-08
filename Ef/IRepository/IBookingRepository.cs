@@ -4,7 +4,7 @@ using Repository.Repository;
 
 namespace Repository.IRepository
 {
-    public  interface IBookingRepository:IBaseRepository<Booking>
+    public  interface IBookingRepository:IBaseRepository
     {
         public Task<bool> AddAsync(AddBookingDto book, string userName);
         public IQueryable<dynamic> GetStatusWithRequestNumber(DateTime date);
@@ -15,5 +15,6 @@ namespace Repository.IRepository
         public  Task<bool> CheckIfCouponExistBookingAsync(int couponId);
         public Task<IQueryable<GetBookingForDoctorDto>> GetAllForDoctor(string userName,DateTime date);
         public bool CheckIfDayAndTimeExists(int doctorId, int timeId);
+        public bool CheckDoctorRequests(int doctorId);
     }
 }

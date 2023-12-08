@@ -10,7 +10,7 @@ namespace Domain.FluentApiClasses
         {
             if (!userManager.Users.Any())
             {
-                string email = "AbdelazizMahmouKarm@gmail.com";
+                string email = "abdelazizmahmoukarm@gmail.com";
                 IdentityResult result = await userManager.CreateAsync(new ApplicationUser()
                 {
                     DateOfAdd = DateTime.Now,

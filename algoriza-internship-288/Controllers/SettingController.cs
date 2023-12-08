@@ -27,7 +27,7 @@ namespace algoriza_internship_288.Controllers
             return Ok(result);
         }
         [HttpPut("UpdateCoupon")]
-        public async Task<IActionResult> Update(EditCouponDto couponDto)
+        public async Task<IActionResult> Update(UpdateCouponDto couponDto)
         {
             
             if (!ModelState.IsValid)

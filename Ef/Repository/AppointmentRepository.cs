@@ -1,7 +1,6 @@
 ﻿using algoriza_internship_288.Domain.Models;
 using algoriza_internship_288.Domain.Models.Enums;
 using algoriza_internship_288.Repository.DAL;
-using Domain.DtoClasses;
 using Domain.DtoClasses.Appointment;
 using Repository.IRepository;
 
@@ -31,7 +30,7 @@ namespace Repository.Repository
         //public bool CheckIfAppointmentIsExsist(int appointmentId,int timeId)
         //=> _context.Appointments.Any(x => x.Id == appointmentId && x.Times.Any(x => x.Id == timeId));
 
-        public bool UpdateAppointment(EditAppointmentDto appointment)
+        public bool UpdateAppointment(UpdateAppointmentDto appointment)
         {
             bool result = _time.Update(appointment);
             return result;

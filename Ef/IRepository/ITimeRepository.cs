@@ -9,7 +9,7 @@ namespace Repository.IRepository
         public bool CheckIfTimeExistForDoctor(int timeId, int doctorId);
         public List<Time> Add(List<double> timesModel,int appointmentId);
         public int? CheckTime(int appointmentId, double time);
-        public bool Update(EditAppointmentDto model);
+        public bool Update(UpdateAppointmentDto model);
        public  bool Delete(int hourId);
     }
 }

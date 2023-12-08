@@ -12,22 +12,6 @@ namespace Repository.Repository
             _context = context;
             _arabic = arabic;
         }
-        //public int GetByName(string name)
-        //{
-        //    int? specializeId = _context.Specializations
-        //        .FirstOrDefault(x => x.Name.Equals(name))?.Id;
-        //    if (specializeId.HasValue && specializeId.Value > 0)
-        //        return specializeId.Value;
-        //    else
-        //        return 0;
-        //}
-        //public Specialization AddByName(string name)
-        //{
-        //    return new Specialization
-        //    {
-        //        Name = name,
-        //    };
-        //}
         public string GetSpecializeNameByDoctorId(int doctorId)
         {
             return _context.Doctors

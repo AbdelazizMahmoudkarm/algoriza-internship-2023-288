@@ -21,14 +21,14 @@ namespace algoriza_internship_288.Controllers
         public async Task<IActionResult> LoginJWtAsync(Login login,bool arabic=false)
         {
             Localization.Arabic = arabic;
-            string result = await _unitOfWork.Doctor.LoginUsingJwtAsync(login); 
+            string result = await _unitOfWork.LoginUsingJwtAsync(login); 
             return Ok(result);       
         }
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync(Login login,bool arabic)
         {
             Localization.Arabic = arabic;
-            bool result = await _unitOfWork.Doctor.LoginAsync(login);
+            bool result = await _unitOfWork.LoginAsync(login);
             return Ok(result);
         }
     }

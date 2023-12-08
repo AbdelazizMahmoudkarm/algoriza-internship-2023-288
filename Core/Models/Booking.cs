@@ -15,9 +15,6 @@ namespace algoriza_internship_288.Domain.Models
         public virtual ApplicationUser Patient { get; set; }
         [Required]
         public DateTime? Date { get; set; }
-       // [Required]
-      //  public int AppointmentId { get; set; }
-      //public virtual Appointment Appointment { get; set; }
         [Required]
         public int HourId { get; set; }
         public virtual Time Hour { get; set; }

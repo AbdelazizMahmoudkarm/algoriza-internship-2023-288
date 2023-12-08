@@ -1,10 +1,9 @@
-﻿using algoriza_internship_288.Domain.Models;
-using Domain.DtoClasses.Patient;
+﻿using Domain.DtoClasses.Patient;
 using Repository.Repository;
 
 namespace Repository.IRepository
 {
-    public interface IPatientRepository : IBaseRepository<ApplicationUser>
+    public interface IPatientRepository : IBaseRepository
     {
         public Task<bool> AddAsync(AddPatientDto patientModel);
     }

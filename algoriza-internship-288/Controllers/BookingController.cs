@@ -60,7 +60,11 @@ namespace algoriza_internship_288.Controllers
         public async Task<IActionResult> GetAllBookingForPatientAsync()
         {
             string userName = User.Identity.Name;
-            return Ok(await _unitOfWork.Booking.GetAllForPatient(userName));
+         IEnumerable<GetBookingForPatientDto> patientBooking = await _unitOfWork.Booking.GetAllForPatient(userName);
+            if (patientBooking == null)
+                return NotFound();
+            else
+            return Ok(patientBooking);
         }
         [HttpPut("CancelBooking")]
         [Authorize(Roles = nameof(UserType.Patient))]

@@ -16,7 +16,7 @@
                 CurrentPage = pageIndex;
                 return source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
-            return null;
+            return Enumerable.Empty<T>();
         }
     }
 }

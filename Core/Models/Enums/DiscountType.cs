@@ -5,9 +5,4 @@
         Percentage,
         Value
     }
-    public enum ArDiscountType
-    {
-        النسبة,
-        القيمة
-    }
 }

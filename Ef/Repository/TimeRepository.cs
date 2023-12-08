@@ -30,14 +30,14 @@ namespace Repository.Repository
             return  _context.Hours.Where(x => x.AppointId == appointmentId &&
                             x.ExistHour == hour).FirstOrDefault()?.Id;
         }
-        public bool Update(EditAppointmentDto model)
+        public bool Update(UpdateAppointmentDto model)
         {
             if (model is not null)
             {
                 bool ifUpdateTimeExists = _context.Hours.Any(x => x.ExistHour == TimeSpan.FromHours(model.Hour));
                 if (!ifUpdateTimeExists)
                 {
-                    var time = _context.Hours.Find(model.hourId);
+                    var time = _context.Hours.Find(model.HourId);
                     if (time != null)
                     {
                         time.ExistHour = TimeSpan.FromHours(model.Hour);

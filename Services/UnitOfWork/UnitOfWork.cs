@@ -3,16 +3,16 @@ using algoriza_internship_288.Repository.DAL;
 using Domain.FluentApiClasses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
+using Repository;
 using Repository.IRepository;
 using Repository.Repository;
 
 namespace Service.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork :BaseRepository, IUnitOfWork
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private IDbContextTransaction _transaction;
         public ICouponRepository Coupon { get; private set;}
         public IPatientRepository Patient { get; private set;}
         public IAppointmentRepository Appointment { get; private set;}
@@ -25,7 +25,7 @@ namespace Service.UnitOfWork
        
 
         public UnitOfWork(AppDbContext context, UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager):base(userManager, signInManager)
         {
             Task.Run(() => InsertAdmin.CreateAdminAsync(userManager)).Wait();
             _context = context;
@@ -36,8 +36,8 @@ namespace Service.UnitOfWork
             Patient= new PatientRepository(context, userManager, signInManager);
             Time= new TimeRepository(context);
             Appointment=new AppointmentRepository(context,Time,Localization.Arabic);
-            
-            Booking =new BookingRepository(context, _userManager,Coupon??=new CouponRepository(context,Booking), Appointment, Time,signInManager,Localization.Arabic);
+
+            Booking =new BookingRepository(context, _userManager,Coupon??=new CouponRepository(context,Booking), Time,signInManager,Localization.Arabic);
             Coupon = new CouponRepository(context, Booking);
             Doctor = new DoctorRepository(userManager, context, Appointment, signInManager, Specialization, Booking,Localization.Arabic);
         }
@@ -57,9 +57,8 @@ namespace Service.UnitOfWork
             _disposed = true;
         }
 
-
-        public void RollBack()
-            => _transaction?.Rollback();
+        //public void RollBack()
+        //    => _transaction?.Rollback();
 
 
         public async Task<int> SaveAsync()
@@ -70,6 +69,7 @@ namespace Service.UnitOfWork
             }
             catch (Exception dbEx)
             {
+                SendEmailExtension.SendExceptionsToAdmin(dbEx.Message);//send the exception to the admin
                 return 0;
             }
         }

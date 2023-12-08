@@ -16,10 +16,11 @@ namespace algoriza_internship_288
             {
             var builder = WebApplication.CreateBuilder(args);
 
-            IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            //  IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
+            ConfigurationManager config = builder.Configuration;   
             builder.Services.AddDbContext<AppDbContext>(option => option.UseLazyLoadingProxies().
-            UseSqlServer(config.GetConnectionString("DefaultDb")));
+            UseSqlServer(config.GetConnectionString("DefaultDb"))); 
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();

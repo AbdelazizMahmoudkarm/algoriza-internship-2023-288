@@ -1,4 +1,5 @@
-﻿using algoriza_internship_288.Domain.Models;
+﻿using algoriza_internship_288.Domain.AccountModels;
+using algoriza_internship_288.Domain.Models;
 using algoriza_internship_288.Domain.Models.Enums;
 using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Patient;
@@ -8,7 +9,7 @@ using Repository.IRepository;
 
 namespace Repository.Repository
 {
-    public class PatientRepository : BaseRepository<ApplicationUser>, IPatientRepository
+    public class PatientRepository : BaseRepository, IPatientRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -18,11 +19,14 @@ namespace Repository.Repository
             _userManager = usermanager;
         public async Task<bool> AddAsync(AddPatientDto model)
         {
+            if (model is null)
+                return false;
+            string userName = string.Concat(model.FName, model.LName);
                 IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()
                 {
                     DateOfAdd= DateTime.Now,
-                    Image = ProcessImage(model.Image),//ProcessImage(doctor.Image),
-                    UserName = string.Concat(model.FName, model.LName),
+                    Image = model.Image.ProcessImage(),
+                    UserName =userName ,
                     Email = model.Email,
                     PhoneNumber = model.Phone,
                     Gender =model.Gender, 
@@ -34,7 +38,9 @@ namespace Repository.Repository
                     if (user is not null)
                     {
                         result = await _userManager.AddToRoleAsync(user, UserType.Patient.ToString());
-                        return result.Succeeded;
+                    if (result.Succeeded)
+                        new Login { UserName = userName, Password = model.Password }.SendEmail(model.Email);
+                    return result.Succeeded;
                     }
                 }
             return false;

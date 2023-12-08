@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Repository.Repository
 {
-    public  interface IDoctorRepository:IBaseRepository<Doctor>
+    public  interface IDoctorRepository:IBaseRepository
     {
         public Task<bool> AddAsync(AddDoctorDto entity);
         public IQueryable<GetDoctorDto> GetByCondition(Expression<Func<Doctor, bool>> expression);
@@ -15,7 +15,7 @@ namespace Repository.Repository
         public  Task<bool> Delete(int id, string name);
       //  public IQueryable<dynamic> GetDoctorIdWithNumberOfRequests(int number);
         public DoctorFilterIntoDto GetDoctorInfoWithSpecializeName(int doctorId);
-        public Task<bool> UpdateAppointmentTimeAsync(EditAppointmentDto model, string userName);
+        public Task<bool> UpdateAppointmentTimeAsync(UpdateAppointmentDto model, string userName);
         public Task<bool> DeleteAppointmentAsync(int hourId, string userName);
     }
 }

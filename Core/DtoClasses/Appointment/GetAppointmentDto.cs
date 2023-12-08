@@ -1,6 +1,6 @@
 ﻿using algoriza_internship_288.Domain.Models.Enums;
 
-namespace Domain.DtoClasses
+namespace Domain.DtoClasses.Appointment
 {
     public class GetAppointmentDto
     {

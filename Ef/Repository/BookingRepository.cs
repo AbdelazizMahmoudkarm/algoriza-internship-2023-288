@@ -11,26 +11,29 @@ using Repository.IRepository;
 
 namespace Repository.Repository
 {
-    public class BookingRepository : BaseRepository<Booking>, IBookingRepository
+    public class BookingRepository : BaseRepository, IBookingRepository
     {
         private readonly AppDbContext _context;
         private readonly ICouponRepository _coupon;
-        private readonly IAppointmentRepository _appointment;
+       // private readonly IAppointmentRepository _appointment;
         private readonly ITimeRepository _time;
-        private readonly UserManager<ApplicationUser> _userManager;
+     //   private readonly UserManager<ApplicationUser> _userManager;
         public static bool _arabic;
-        public BookingRepository(AppDbContext context, UserManager<ApplicationUser> userManager,
-            ICouponRepository coupon,IAppointmentRepository appointment,
-            ITimeRepository time,SignInManager<ApplicationUser> signInManager,bool arabic) 
+        public BookingRepository(AppDbContext context, UserManager<ApplicationUser> userManager,ICouponRepository coupon
+            ,ITimeRepository time,SignInManager<ApplicationUser> signInManager,bool arabic) 
             : base(userManager, signInManager)
         {
             _context = context;
             _coupon = coupon;
-            _appointment = appointment;
+            //_appointment = appointment;
             _time = time;
-            _userManager= userManager;
+            //_userManager= userManager;
             _arabic= arabic;
         }
+
+        public bool CheckDoctorRequests(int doctorId)
+        =>      _context.Bookings.Any(x => x.DoctorId == doctorId);
+       
         public async Task<bool> CancelAsync(int bookingId, string userName)
         {
             string patientId = (await GetUserAsync(UserType.Patient.ToString(), userName))?.Id;
@@ -78,12 +81,8 @@ namespace Repository.Repository
                 if (doctor is not null)
                 {
                     int doctorId = doctor.Id;
-                    //  dynamic appointment = _appointment.GetAppointmentIdWithTimeIdOrDefault(doctorId, book.Day, book.Time);
-                    if (/*book.AppointmentId != 0 &&*/ book.TimeId != 0)
+                    if ( book.TimeId != 0)
                     {
-                        //int appointmentId = appointment.AppointmentId;
-                        //int hourId = appointment.TimeId;
-
                         bool checkIfTimeExistBefore = _context.Bookings
                             .Any(x => x.DoctorId == doctorId&&  x.HourId == book.TimeId);
                         if (checkIfTimeExistBefore)
@@ -155,7 +154,7 @@ namespace Repository.Repository
                 Gender=b.Patient.Gender.GetGender(_arabic),
                 Image = b.Patient.Image,
                 Email= b.Patient.Email,
-                age=GetAge(b.Patient.DateOfBirth),
+                age=b.Patient.DateOfBirth.GetAge(),
                 Phone=b.Patient.PhoneNumber,
                 Day = b.Hour.Appointment.ExistingDay.GetDay(_arabic),
                 Hour = b.Hour.ExistHour,
@@ -163,18 +162,13 @@ namespace Repository.Repository
                 BookingDate = b.Date.Value
             }).AsNoTracking();
         }
-        private static int GetAge(DateTime dob)
-        {
-            int age = DateTime.Now.Year - dob.Year;
-            if (DateTime.Now.DayOfYear < dob.DayOfYear)
-                age -= 1;
-            return age;
-        }
+       
         public async Task<IEnumerable<GetBookingForPatientDto>> GetAllForPatient(string userName)
         {
             string patientId = (await GetUserAsync(UserType.Patient.ToString(), userName))?.Id;
-           
 
+            if (patientId == null)
+                return null;
            var patientbooking= _context.Bookings.Where(b => b.PatientId.Equals(patientId)).AsEnumerable().Select( b =>
             new GetBookingForPatientDto()
             {

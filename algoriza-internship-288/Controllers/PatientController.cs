@@ -13,9 +13,7 @@ namespace algoriza_internship_288.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         public PatientController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        => _unitOfWork = unitOfWork;
 
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromForm] AddPatientDto patientModel)
@@ -26,7 +24,6 @@ namespace algoriza_internship_288.Controllers
             return Ok(result);
         }
 
-       
     }
 }
 

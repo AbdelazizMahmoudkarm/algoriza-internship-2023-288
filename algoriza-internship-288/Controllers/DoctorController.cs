@@ -20,17 +20,17 @@ namespace algoriza_internship_288.Controllers
         
         [HttpGet("GetAll")]
         [Authorize(Roles = nameof(UserType.Admin)+","+nameof(UserType.Patient))]
-        public IActionResult GetAll(int pageIndex = 1,int pageSize=5,string search=null)
+        public IActionResult GetAll(int pageIndex = 1,int pageSize=5,string searchIdOrName=null)
         {
             IQueryable<GetDoctorDto> doctors;
-            if (!search.IsNullOrEmpty())
+            if (!searchIdOrName.IsNullOrEmpty())
             {
-                int.TryParse(search, out int doctorId);
+                int.TryParse(searchIdOrName, out int doctorId);
                 if (doctorId > 0)
                     doctors = _unitOfWork.Doctor.GetByCondition(x => x.Id == doctorId);
                 else
                     doctors = _unitOfWork.Doctor.GetByCondition(x =>
-                    x.User.UserName.Contains(search) || x.User.Email.Contains(search));
+                    x.User.UserName.Contains(searchIdOrName) || x.User.Email.Contains(searchIdOrName));
             }
             else
                 doctors = _unitOfWork.Doctor.GetByCondition(default);
@@ -60,9 +60,9 @@ namespace algoriza_internship_288.Controllers
             bool result = await _unitOfWork.Doctor.AddAsync(doctorDto);
             return Ok(result);   
         }
-        [HttpPut("Edit")]
+        [HttpPut("Update")]
         [Authorize(Roles = nameof(UserType.Doctor))]
-        public  async Task<IActionResult> Edit([FromForm]UpdateDoctorDto editDoctorDto)
+        public  async Task<IActionResult> Update([FromForm]UpdateDoctorDto editDoctorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -84,7 +84,7 @@ namespace algoriza_internship_288.Controllers
         }
         [HttpPut("UpdateTime")]
         [Authorize(Roles = nameof(UserType.Doctor))]
-        public async Task<IActionResult> UpdateAppointMentAsync(EditAppointmentDto model)
+        public async Task<IActionResult> UpdateAppointMentAsync(UpdateAppointmentDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();

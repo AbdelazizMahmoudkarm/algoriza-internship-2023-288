@@ -1,5 +1,4 @@
 ﻿using algoriza_internship_288.Domain.Models.Enums;
-using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -8,25 +7,25 @@ namespace Domain.DtoClasses
 {
     public  class BaseDto
     {
-        public IFormFile Image { get; set; }
         [Required]
         public string FName { get; set; }
         [Required]
         public string LName { get; set; }
         [Required]
-        [EmailAddress]
-       // [RegularExpression("[A-Za-z0-9]{6,}[@][a-z]+[.][a-z]+")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        [MinLength(11),MaxLength(20)]
+        [MinLength(11),MaxLength(13)]
         public string Phone { get; set; }
+        [Required]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Gender Gender { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
-        [Compare("ConfirmPassword"),PasswordPropertyText(true)]
-        //[RegularExpression("[A-Z]+[A-za-z]{6,}[-_$@]{1}[a-z09]+")]
+        [Required]
+        [Compare("ConfirmPassword"),DataType(DataType.Password,ErrorMessage ="It must contain at least 6  letter with one captital letter and special char ")]
         public string Password { get; set; }
-        [PasswordPropertyText(true)]
+        [Required]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
     }
 }

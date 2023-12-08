@@ -1,4 +1,6 @@
-﻿namespace Domain.DtoClasses.Doctor
+﻿using Domain.DtoClasses.Appointment;
+
+namespace Domain.DtoClasses.Doctor
 {
     public class GetDoctorDto
     {

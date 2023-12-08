@@ -1,21 +1,13 @@
-﻿using algoriza_internship_288.Domain.Models.Enums;
-using Domain.DtoClasses;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.DtoClasses.Doctor
 {
     public class AddDoctorDto : BaseDto
     {
+        [Required]
+        public IFormFile Image { get; set; }
+        [Required]
         public int  SpecializeId { get; set; }
-
-        //public virtual int GenderId { get { return (int)Gender; } set { Gender = (Gender)value; } }
-
-
-
-        //public UserType UserType { get; set; }
-
-        //public virtual int UserTypeId { get { return (int)UserType; } set { UserType = (UserType)value; } }
-
-
-        // public virtual Specialization Specialization { get; set; }
     }
 }

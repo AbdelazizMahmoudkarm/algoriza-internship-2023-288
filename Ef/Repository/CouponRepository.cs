@@ -21,16 +21,6 @@ namespace Repository.Repository
             return (await _context.Coupons.
                 FirstOrDefaultAsync(x =>x.Code==code && x.Avaliable));
         }
-        public int GetIdOrDefault()
-        {
-            Coupon coupon = _context.Coupons
-                .Where(x => x.Avaliable).FirstOrDefault();
-            if (coupon is not null)
-            {
-                return coupon.Id;
-            }
-            return default;
-        }
         public bool Add(AddCouponDto couponModel)
         {
             if (couponModel is not null)
@@ -47,7 +37,7 @@ namespace Repository.Repository
             }
             return false;
         }
-        public async Task<bool> UpdateAsync(EditCouponDto couponModel)
+        public async Task<bool> UpdateAsync(UpdateCouponDto couponModel)
         {
             if (couponModel is not null)
             {

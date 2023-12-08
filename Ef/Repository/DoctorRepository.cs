@@ -1,4 +1,5 @@
-﻿using algoriza_internship_288.Domain.Models;
+﻿using algoriza_internship_288.Domain.AccountModels;
+using algoriza_internship_288.Domain.Models;
 using algoriza_internship_288.Domain.Models.Enums;
 using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Appointment;
@@ -9,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Repository.Repository
 {
-    public class DoctorRepository : BaseRepository<Doctor>, IDoctorRepository
+    public class DoctorRepository : BaseRepository, IDoctorRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _context;
@@ -37,11 +38,12 @@ namespace Repository.Repository
                 Doctor doctor = new();
                 if (model.SpecializeId != 0)
                     doctor.SpecializeId = model.SpecializeId;
+                string userName = string.Concat(model.FName, model.LName);
                 IdentityResult result = await _userManager.CreateAsync(new ApplicationUser()
                 {
                     DateOfAdd = DateTime.Now,
-                    Image = ProcessImage(model.Image),
-                    UserName = string.Concat(model.FName, model.LName),
+                    Image = model.Image.ProcessImage(),
+                    UserName = userName,
                     Email = model.Email,
                     PhoneNumber = model.Phone,
                     Gender = model.Gender,
@@ -53,6 +55,8 @@ namespace Repository.Repository
                     if (user is not null)
                     {
                         result = await _userManager.AddToRoleAsync(user, UserType.Doctor.ToString());
+                        if (result.Succeeded)
+                            new Login { UserName = userName, Password = model.Password }.SendEmail(model.Email);
                         return result.Succeeded;
                     }
                 }
@@ -76,12 +80,12 @@ namespace Repository.Repository
             }
             return isOk;
         }
-        public async Task<bool> UpdateAppointmentTimeAsync(EditAppointmentDto model,string userName)
+        public async Task<bool> UpdateAppointmentTimeAsync(UpdateAppointmentDto model,string userName)
         {
             int? doctorId = (await GetUserAsync(UserType.Doctor.ToString(), userName))?.Doctor.Id;
             if(doctorId.HasValue)
             {
-                if(!_booking.CheckIfDayAndTimeExists(doctorId.Value, model.hourId))
+                if(!_booking.CheckIfDayAndTimeExists(doctorId.Value, model.HourId))
                     return _appointment.UpdateAppointment(model);
             }
             return false;
@@ -108,42 +112,26 @@ namespace Repository.Repository
                 doctor.User.UserName = string.Concat(doctorModel.FName, doctorModel.LName);
                 doctor.User.Gender = doctorModel.Gender;
                 doctor.User.Email = doctorModel.Email;
-                doctor.User.Image = ProcessImage(doctorModel.Image);
+                doctor.User.Image = doctorModel.Image.ProcessImage();
                 doctor.User.DateOfBirth = doctorModel.DateOfBirth;
                 doctor.User.PhoneNumber = doctorModel.Phone;
             }
-           
-            //int specializeid = _specialize.GetByName(doctorModel.SpecialzeName);
-            //if (specializeid != 0)
-            //    doctor.SpecializeId = specializeid;
-            //else
-            //    doctor.Specialization = _specialize.AddByName(doctorModel.SpecialzeName);
             _context.Update(doctor);
             return true;
         }
         public async Task<bool> Delete(int id,string name)
         {
-           dynamic doctorIdWithBookings = _context.Doctors.Where(x => x.Id.Equals(id)).Select(x =>
-           new
-           {
-               BookingCount= x.User.Bookings.Count,
-               x.Id
-           }).FirstOrDefault();
-            if (doctorIdWithBookings != null)
-            {
-                if (doctorIdWithBookings.BookingCount == 0)
-                {
-                    IdentityResult result = await _userManager.DeleteAsync(new() { Id = doctorIdWithBookings.Id });
-                    return result.Succeeded;
-                }
-            }
-            return false;
+            if (_booking.CheckDoctorRequests(id))
+                return false;
+            string doctorId = _context.Doctors.FirstOrDefault(x => x.Id == id)?.UserId;
+            IdentityResult result = await _userManager.DeleteAsync(new() { Id = doctorId });
+            return result.Succeeded;
         }
 
         ///ToDo
         public IQueryable<GetDoctorDto> GetByCondition(Expression<Func<Doctor, bool>> condition)
         {
-            IQueryable<Doctor> doctor = null;
+            IQueryable<Doctor> doctor ;
             if (condition is not null)
                 doctor = _context.Doctors.Where(condition);
             else
