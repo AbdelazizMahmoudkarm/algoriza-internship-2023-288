@@ -13,14 +13,14 @@ namespace algoriza_internship_288
     public class Program
     {
         public static void Main(string[] args)
-            {
+        {
             var builder = WebApplication.CreateBuilder(args);
 
             //  IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            ConfigurationManager config = builder.Configuration;   
+            ConfigurationManager config = builder.Configuration;
             builder.Services.AddDbContext<AppDbContext>(option => option.UseLazyLoadingProxies().
-            UseSqlServer(config.GetConnectionString("DefaultDb"))); 
+            UseSqlServer(config.GetConnectionString("DefaultDb")));
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -29,7 +29,7 @@ namespace algoriza_internship_288
                 option => option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
             );
 
-            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
                  option =>
@@ -46,6 +46,11 @@ namespace algoriza_internship_288
                      };
                  });
 
+            builder.Services.AddAuthentication().AddGoogle(option =>
+            {
+                option.ClientId = "682273977585-qsmhtmcvstlkj7hcgqqsmbn3t9fqu6ui.apps.googleusercontent.com";
+                option.ClientSecret = "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";
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -62,7 +67,7 @@ namespace algoriza_internship_288
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-           
+
 
             app.MapControllers();
 

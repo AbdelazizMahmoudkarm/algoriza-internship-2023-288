@@ -2,7 +2,6 @@
 using algoriza_internship_288.Repository.DAL;
 using Domain.FluentApiClasses;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Storage;
 using Repository;
 using Repository.IRepository;
 using Repository.Repository;
@@ -30,16 +29,15 @@ namespace Service.UnitOfWork
             Task.Run(() => InsertAdmin.CreateAdminAsync(userManager)).Wait();
             _context = context;
             _userManager = userManager;
-            
-
+           
             Specialization= new SpecializationRepository(context,Localization.Arabic);
-            Patient= new PatientRepository(context, userManager, signInManager);
+            Patient= new PatientRepository( userManager, signInManager);
             Time= new TimeRepository(context);
             Appointment=new AppointmentRepository(context,Time,Localization.Arabic);
 
             Booking =new BookingRepository(context, _userManager,Coupon??=new CouponRepository(context,Booking), Time,signInManager,Localization.Arabic);
             Coupon = new CouponRepository(context, Booking);
-            Doctor = new DoctorRepository(userManager, context, Appointment, signInManager, Specialization, Booking,Localization.Arabic);
+            Doctor = new DoctorRepository(userManager, context, Appointment, signInManager, Booking,Localization.Arabic);
         }
 
         public void Dispose()

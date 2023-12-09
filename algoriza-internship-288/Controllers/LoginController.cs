@@ -17,6 +17,22 @@ namespace algoriza_internship_288.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
+        [HttpGet("ExternalLogin")]
+        public async Task<IActionResult> ExternalLogin()
+        {
+           var ex= await _unitOfWork.ExternalLoginAsync();
+            //  var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback");
+            var properties = _unitOfWork.AuthenticationProperties(ex.FirstOrDefault().Name, "./api/Login/Callback");//redirectUrl);
+            return new ChallengeResult(ex.FirstOrDefault().Name,properties);
+        }
+        [HttpGet("Callback")]
+        public async Task<IActionResult> Callback()
+        {
+            bool result = await _unitOfWork.CreateUserWithExternalLoginCallBackAsync();
+            return Ok(result);
+        }
+
         [HttpPost("LoginUsingJWT")]
         public async Task<IActionResult> LoginJWtAsync(Login login,bool arabic=false)
         {

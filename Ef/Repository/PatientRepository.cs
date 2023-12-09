@@ -1,10 +1,8 @@
 ﻿using algoriza_internship_288.Domain.AccountModels;
 using algoriza_internship_288.Domain.Models;
 using algoriza_internship_288.Domain.Models.Enums;
-using algoriza_internship_288.Repository.DAL;
 using Domain.DtoClasses.Patient;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Repository.IRepository;
 
 namespace Repository.Repository
@@ -13,7 +11,7 @@ namespace Repository.Repository
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public PatientRepository(AppDbContext context, UserManager<ApplicationUser> usermanager, 
+        public PatientRepository(UserManager<ApplicationUser> usermanager, 
             SignInManager<ApplicationUser> signInManager) : base(usermanager, signInManager)
         =>
             _userManager = usermanager;

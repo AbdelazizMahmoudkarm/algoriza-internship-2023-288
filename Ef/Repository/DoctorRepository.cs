@@ -15,18 +15,18 @@ namespace Repository.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _context;
         private readonly IAppointmentRepository _appointment;
-        private readonly ISpecializationRepository _specialize;
+        
         private readonly IBookingRepository _booking;
-        public static bool _arabic;
+        private static bool _arabic;
 
         public DoctorRepository(UserManager<ApplicationUser> userManager, AppDbContext context,
             IAppointmentRepository appointment, SignInManager<ApplicationUser> signInManager,
-            ISpecializationRepository specialize,IBookingRepository booking, bool arabic) : base(userManager, signInManager)
+            IBookingRepository booking, bool arabic) : base(userManager, signInManager)
         {
             _userManager = userManager;
             _context = context;
             _appointment = appointment;
-            _specialize = specialize;
+            
             _booking = booking;
             _arabic = arabic;
         }

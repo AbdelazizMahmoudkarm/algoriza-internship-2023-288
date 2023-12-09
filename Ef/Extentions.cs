@@ -38,5 +38,14 @@ namespace Repository
             return uniqueName;
         }
 
+        public static string GetUserName(this string usernameWithSplits)
+        {
+            string[] usernameWithSpace = usernameWithSplits.Split(" ");
+            string username = "";
+            for (int i = 0; i < usernameWithSpace.Length; i++)
+                username += usernameWithSpace[i];
+            return username;
+        }
+
     }
 }

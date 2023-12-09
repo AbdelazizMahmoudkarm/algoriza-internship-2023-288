@@ -24,7 +24,7 @@ namespace Domain.FluentApiClasses
                     ApplicationUser user = await userManager.FindByEmailAsync(email);
                     if (user is not null)
                     {
-                        result = await userManager.AddToRoleAsync(user, UserType.Admin.ToString());
+                        await userManager.AddToRoleAsync(user, UserType.Admin.ToString());
                     }
                 }
             }
