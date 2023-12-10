@@ -8,7 +8,6 @@ namespace algoriza_internship_288.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = nameof(UserType.Patient) + "," + nameof(UserType.Admin))]
     public class PatientController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

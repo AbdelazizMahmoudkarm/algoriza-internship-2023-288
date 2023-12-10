@@ -27,6 +27,7 @@ namespace algoriza_internship_288.Controllers
             return new ChallengeResult(ex.FirstOrDefault().Name,properties);
         }
         [HttpGet("Callback")]
+        
         public async Task<IActionResult> Callback()
         {
             bool result = await _unitOfWork.CreateUserWithExternalLoginCallBackAsync();

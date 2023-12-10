@@ -84,7 +84,7 @@ namespace Repository.Repository
                     if ( book.TimeId != 0)
                     {
                         bool checkIfTimeExistBefore = _context.Bookings
-                            .Any(x => x.DoctorId == doctorId&&  x.HourId == book.TimeId);
+                            .Any(x => x.DoctorId == doctorId&&  x.HourId == book.TimeId && x.Status.Equals(RequestType.Pending));
                         if (checkIfTimeExistBefore)
                             return false;
                         bool bookingSameDoctorWithSameDay = _context.Bookings
@@ -215,7 +215,7 @@ namespace Repository.Repository
                 .Select(x =>
                 new
                 {
-                    Status = x.Key.ToString(),
+                    Status = x.Key.GetStatus(_arabic),
                     NumberOfRequests = x.Count(),
                 }).AsNoTracking();
         }

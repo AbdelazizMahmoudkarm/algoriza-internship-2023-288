@@ -13,6 +13,7 @@ namespace Domain.DtoClasses
         public string LName { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
+        [RegularExpression("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$")]
         public string Email { get; set; }
         [MinLength(11),MaxLength(13)]
         public string Phone { get; set; }

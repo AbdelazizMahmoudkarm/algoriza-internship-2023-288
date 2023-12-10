@@ -42,16 +42,21 @@ namespace algoriza_internship_288
                          ValidateIssuerSigningKey = true,
                          ValidIssuer = config["Jwt:Issuer"],
                          ValidAudience = config["Jwt:Audience"],
+                         
                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"])),
                      };
                  });
-
+    //        {
+    //            "GoogleUser": {
+    //                "ClientId": "682273977585-qsmhtmcvstlkj7hcgqqsmbn3t9fqu6ui.apps.googleusercontent.com",
+    //                "ClientSecret": "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"
+    //            }
+    //        }
             builder.Services.AddAuthentication().AddGoogle(option =>
-            {
-                option.ClientId = "682273977585-qsmhtmcvstlkj7hcgqqsmbn3t9fqu6ui.apps.googleusercontent.com";
-                option.ClientSecret = "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";
+            {//the data comes from secret file
+                option.ClientId = config["GoogleUser:ClientId"];
+                option.ClientSecret = config["GoogleUser:ClientSecret"];
             });
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

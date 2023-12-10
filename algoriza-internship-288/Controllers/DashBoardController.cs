@@ -21,14 +21,14 @@ namespace algoriza_internship_288.Controllers
         [HttpGet("NumOfDoctor")]
         public async Task<IActionResult> DoctorNum(DateTime date)
         {
-            int numOfDoctors = await _unitOfWork.Doctor.CountAsync(UserType.Doctor.ToString(),date);
+            int numOfDoctors = await _unitOfWork.CountAsync(UserType.Doctor.ToString(),date);
             return Ok(numOfDoctors);
         }
 
         [HttpGet("NumOfPatient")]
         public async Task<IActionResult> PatientNum(DateTime date)
         {
-            int numberOfPatient = await _unitOfWork.Doctor.CountAsync(UserType.Patient.ToString(),date);
+            int numberOfPatient = await _unitOfWork.CountAsync(UserType.Patient.ToString(),date);
             return Ok(numberOfPatient);
         }
 

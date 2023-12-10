@@ -24,9 +24,6 @@ namespace Repository.Repository
               _signInManager= signInManager;
             _config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         }
-
-        
-
         public async Task<int> CountAsync(string userType, DateTime search)
         {
             if (!search.Equals(DateTime.MinValue))
@@ -49,25 +46,21 @@ namespace Repository.Repository
                     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
                     var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
                     JwtSecurityToken token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                        _config["Jwt:Audence"], null, expires: DateTime.Now.AddMinutes(15), signingCredentials: credentials);
+                        _config["Jwt:Audience"], null, expires: DateTime.Now.AddMinutes(15), signingCredentials: credentials);
                     return new JwtSecurityTokenHandler().WriteToken(token);
                 }
             }
             return null;
         }
-
         #region ExternalLogin
         //1
         public async Task<List<AuthenticationScheme>> ExternalLoginAsync()
-        {
-            return (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        }
+            => (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        
         //2
         public  AuthenticationProperties AuthenticationProperties(string provider,string returnUrl)
-        {
-            return  (_signInManager.ConfigureExternalAuthenticationProperties(provider,returnUrl));
-        }
-
+             =>(_signInManager.ConfigureExternalAuthenticationProperties(provider,returnUrl));
+        //3
         public async Task<bool> CreateUserWithExternalLoginCallBackAsync()
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -77,7 +70,6 @@ namespace Repository.Repository
                 .ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
                 return true;
-
             else
             {
                 string email = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -92,7 +84,6 @@ namespace Repository.Repository
                     }
                     else
                     {
-                        
                         user = new ApplicationUser()
                         {
                             UserName = info.Principal.FindFirstValue(ClaimTypes.Name).GetUserName(),
@@ -109,14 +100,12 @@ namespace Repository.Repository
                                 return true;
                             }
                         }
-
                         return createuserResult.Succeeded;
                     }
                 }
             }
             return false;
         }
-       
 
         #endregion
         public async Task<ApplicationUser> GetUserAsync(string userType, string userName)
@@ -124,8 +113,6 @@ namespace Repository.Repository
                 .FirstOrDefault(x => x.UserName.Equals(userName));
 
         public ApplicationUser GetUserByEmail(string email)
-        => _userManager.Users.FirstOrDefault(x => x.Email.Equals(email));
-        
-       
+             => _userManager.Users.FirstOrDefault(x => x.Email.Equals(email));
     }
 }
