@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Ef\Repository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RepositoryServices\" />
-  </ItemGroup>
-
 </Project>
