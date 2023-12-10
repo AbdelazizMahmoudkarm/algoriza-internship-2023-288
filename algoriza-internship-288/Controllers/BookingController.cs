@@ -42,7 +42,7 @@ namespace algoriza_internship_288.Controllers
                 await _unitOfWork.SaveAsync();
             return Ok(reault);
         }
-        [HttpPost("Booking")]
+        [HttpPost("PatientBooking")]
         [Authorize(Roles = nameof(UserType.Patient))]
         public async Task<IActionResult> BookingAsync(AddBookingDto bookingModel)
         {
